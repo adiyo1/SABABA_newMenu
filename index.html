@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SABABA Café - Menu</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        sababa: {
+                            50: '#fdfbf7',
+                            100: '#f7f2e8',
+                            200: '#eee3cd',
+                            500: '#c29b38',
+                            600: '#a37e28',
+                            800: '#4a3b19',
+                            900: '#2c220c',
+                        }
+                    },
+                    fontFamily: {
+                        he: ['Assistant', 'sans-serif'],
+                        en: ['Poppins', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Assistant', 'Poppins', sans-serif;
+            background-color: #faf8f5;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="text-stone-800 antialiased min-h-screen flex flex-col selection:bg-amber-100 relative">
+
+    <!-- Header & Navigation -->
+    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-amber-900/10 shadow-sm">
+        <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <div class="flex items-center space-x-2 space-x-reverse cursor-pointer" onclick="window.scrollTo({top:0, behavior:'smooth'})">
+                <div class="text-center">
+                    <span class="block text-2xl md:text-3xl font-bold tracking-wider text-sababa-800 uppercase font-serif">SABABA</span>
+                    <span class="block text-xs md:text-sm -mt-1 font-light italic text-amber-600 tracking-widest">Café</span>
+                </div>
+            </div>
+
+            <!-- Language Switcher Buttons -->
+            <div class="flex items-center bg-stone-100 p-1 rounded-full border border-stone-200">
+                <button onclick="setLanguage('he')" id="lang-he" class="px-2.5 py-1 text-xs font-semibold rounded-full transition-all duration-200 bg-sababa-800 text-white shadow-sm">
+                    עברית
+                </button>
+                <button onclick="setLanguage('en')" id="lang-en" class="px-2.5 py-1 text-xs font-semibold rounded-full transition-all duration-200 text-stone-600 hover:text-stone-900">
+                    English
+                </button>
+                <button onclick="setLanguage('es')" id="lang-es" class="px-2.5 py-1 text-xs font-semibold rounded-full transition-all duration-200 text-stone-600 hover:text-stone-900">
+                    Español
+                </button>
+                <button onclick="setLanguage('fr')" id="lang-fr" class="px-2.5 py-1 text-xs font-semibold rounded-full transition-all duration-200 text-stone-600 hover:text-stone-900">
+                    Français
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Waiter Order Banner -->
+    <section class="bg-amber-50 border-b border-amber-200/60 py-2.5 px-4 text-center">
+        <div class="max-w-4xl mx-auto flex items-center justify-center gap-2 text-amber-900 text-xs md:text-sm font-medium">
+            <i class="fa-solid fa-bell-concierge text-sababa-600"></i>
+            <span id="notice-text">ההזמנות מתבצעות ישירות מול המלצר. בתיאבון!</span>
+        </div>
+    </section>
+
+    <!-- Hero / Intro -->
+    <section class="relative py-8 md:py-12 px-4 bg-gradient-to-b from-amber-50/50 to-transparent text-center">
+        <div class="max-w-2xl mx-auto space-y-2">
+            <span class="text-xs uppercase tracking-widest text-sababa-600 font-semibold" id="subtitle-text">תפריט חלבי עשיר ואיכותי</span>
+            <h1 class="text-3xl md:text-4xl font-bold text-sababa-900" id="title-text">הטעמים של SABABA</h1>
+            <p class="text-stone-600 text-sm md:text-base max-w-lg mx-auto" id="desc-text">חומרי גלם טריים, קפה משובח ואווירה חמה. לחצו על כל מנה לקבלת פירוט ותמונה מלאה.</p>
+        </div>
+    </section>
+
+    <!-- Sticky Category Tabs Navigation -->
+    <div class="sticky top-[57px] z-30 bg-white/95 backdrop-blur-md border-b border-stone-200 shadow-xs py-2">
+        <div class="max-w-5xl mx-auto px-4">
+            <div class="flex items-center gap-2 overflow-x-auto hide-scrollbar py-1" id="categories-tabs">
+                <!-- Dynamically populated category buttons -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Menu Content Container -->
+    <main class="max-w-5xl mx-auto px-4 py-8 flex-1 w-full space-y-12">
+        <div id="menu-sections" class="space-y-12">
+            <!-- Dynamically populated sections with dishes -->
+        </div>
+    </main>
+
+    <!-- Dish Details Modal -->
+    <div id="dish-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300" onclick="closeModalOnBackdrop(event)">
+        <div class="bg-white rounded-3xl max-w-lg w-full overflow-hidden shadow-2xl transform scale-95 transition-transform duration-300 relative border border-amber-900/10" id="modal-content">
+            
+            <!-- Close Button -->
+            <button onclick="closeModal()" class="absolute top-3 right-3 z-10 w-9 h-9 bg-white/80 hover:bg-white text-stone-700 rounded-full flex items-center justify-center shadow-md transition-all duration-200 focus:outline-none">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <!-- Modal Image -->
+            <div class="relative h-60 w-full overflow-hidden bg-stone-100">
+                <img id="modal-dish-img" src="" alt="" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/800x400/f7f2e8/4a3b19?text=SABABA+Café'">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
+                <span id="modal-dish-price" class="absolute bottom-4 right-4 text-lg font-bold text-white bg-sababa-800/90 backdrop-blur-md px-3.5 py-1 rounded-xl shadow-md border border-amber-200/30"></span>
+            </div>
+
+            <!-- Modal Details -->
+            <div class="p-6 space-y-4">
+                <div class="space-y-1">
+                    <span id="modal-dish-cat" class="text-xs uppercase font-semibold text-sababa-600 tracking-wider"></span>
+                    <h3 id="modal-dish-title" class="text-2xl font-bold text-sababa-900"></h3>
+                </div>
+
+                <div class="border-t border-stone-100 pt-3">
+                    <p id="modal-dish-desc" class="text-stone-600 text-base leading-relaxed"></p>
+                </div>
+
+                <div class="bg-amber-50 rounded-2xl p-4 border border-amber-200/50 flex items-center justify-between text-xs text-amber-900">
+                    <span class="flex items-center gap-2">
+                        <i class="fa-solid fa-bell-concierge text-sababa-600 text-sm"></i>
+                        <span id="modal-waiter-text">להזמנה פנו למלצר/ית בשולחן</span>
+                    </span>
+                    <button onclick="closeModal()" class="font-bold text-sababa-800 underline hover:text-sababa-900" id="modal-close-btn">סגור</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-sababa-900 text-stone-300 py-8 px-4 mt-12 border-t border-sababa-800">
+        <div class="max-w-5xl mx-auto text-center space-y-3">
+            <div class="text-xl font-bold text-white tracking-widest font-serif">SABABA Café</div>
+            <p class="text-xs text-stone-400" id="footer-notice">תפריט לצפייה בלבד • ההזמנה מתבצעת אצל המלצר/ית</p>
+            <div class="text-xs text-stone-500 pt-4 border-t border-stone-800">
+                &copy; <span id="year"></span> SABABA Café. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Data and Interactive Logic -->
+    <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // Dictionary for translations & Content
+        const i18n = {
+            he: {
+                dir: 'rtl',
+                notice: 'ההזמנות מתבצעות ישירות מול המלצר. בתיאבון!',
+                subtitle: 'תפריט חלבי עשיר ואיכותי',
+                title: 'הטעמים של SABABA',
+                desc: 'חומרי גלם טריים, קפה משובח ואווירה חמה. לחצו על כל מנה לקבלת פירוט ותמונה מלאה.',
+                footerNotice: 'תפריט לצפייה בלבד • ההזמנה מתבצעת אצל המלצר/ית',
+                waiterOrderText: 'להזמנה פנו למלצר/ית בשולחן',
+                closeBtn: 'סגור',
+                clickToView: 'לחצו לפירוט המנה',
+                categories: {
+                    breakfast: 'ארוחות בוקר',
+                    sandwiches: 'כריכים',
+                    toasts: 'טוסטים',
+                    pizzas: 'פיצות',
+                    pastas: 'פסטות',
+                    desserts: 'קינוחים',
+                    smoothies: 'שייקים',
+                    coffee: 'קפה',
+                    drinks: 'שתייה קרה'
+                }
+            },
+            en: {
+                dir: 'ltr',
+                notice: 'Orders are taken directly by your waiter. Enjoy your meal!',
+                subtitle: 'Fresh & Delicious Dairy Menu',
+                title: 'SABABA Flavors',
+                desc: 'Fresh ingredients, premium coffee, and a warm atmosphere. Click on any dish for full details and photos.',
+                footerNotice: 'Menu preview only • Please order with your waiter',
+                waiterOrderText: 'Order directly with your waiter at the table',
+                closeBtn: 'Close',
+                clickToView: 'Click for details',
+                categories: {
+                    breakfast: 'Breakfast',
+                    sandwiches: 'Sandwiches',
+                    toasts: 'Toasties',
+                    pizzas: 'Pizzas',
+                    pastas: 'Pastas',
+                    desserts: 'Desserts',
+                    smoothies: 'Smoothies',
+                    coffee: 'Coffee',
+                    drinks: 'Cold Drinks'
+                }
+            },
+            es: {
+                dir: 'ltr',
+                notice: 'Los pedidos se realizan directamente con el mesero. ¡Buen provecho!',
+                subtitle: 'Menú Lácteo Fresco y Delicioso',
+                title: 'Sabores de SABABA',
+                desc: 'Ingredientes frescos, café de alta calidad y un ambiente acogedor. Haga clic en cualquier plato para ver detalles y fotos.',
+                footerNotice: 'Menú solo para lectura • Por favor ordene con su mesero',
+                waiterOrderText: 'Ordene directamente con su mesero en la mesa',
+                closeBtn: 'Cerrar',
+                clickToView: 'Clic para ver detalles',
+                categories: {
+                    breakfast: 'Desayunos',
+                    sandwiches: 'Sándwiches',
+                    toasts: 'Tostados',
+                    pizzas: 'Pizzas',
+                    pastas: 'Pastas',
+                    desserts: 'Postres',
+                    smoothies: 'Licuados',
+                    coffee: 'Café',
+                    drinks: 'Bebidas Frías'
+                }
+            },
+            fr: {
+                dir: 'ltr',
+                notice: 'Les commandes se font directement auprès du serveur. Bon appétit !',
+                subtitle: 'Menu Lacté Frais et Savoureux',
+                title: 'Les Saveurs de SABABA',
+                desc: 'Ingrédients frais, café d\'exception et ambiance chaleureuse. Cliquez sur un plat pour voir les détails et photos.',
+                footerNotice: 'Menu de consultation uniquement • Veuillez commander auprès de votre serveur',
+                waiterOrderText: 'Commandez directement auprès de votre serveur à table',
+                closeBtn: 'Fermer',
+                clickToView: 'Cliquer pour plus de détails',
+                categories: {
+                    breakfast: 'Petits Déjeuners',
+                    sandwiches: 'Sandwichs',
+                    toasts: 'Toasts',
+                    pizzas: 'Pizzas',
+                    pastas: 'Pâtes',
+                    desserts: 'Desserts',
+                    smoothies: 'Smoothies',
+                    coffee: 'Cafés',
+                    drinks: 'Boissons Fraîches'
+                }
+            }
+        };
+
+        // Menu Data with individual dish images across all 9 categories
+        const menuData = [
+            {
+                id: 'breakfast',
+                icon: 'fa-sun',
+                image: 'https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?auto=format&fit=crop&w=800&q=80',
+                items: [
+                    {
+                        name: { he: 'הרכב לעצמך אומלט', en: 'Build Your Own Omelet', es: 'Crea tu Tortilla', fr: 'Créez votre Omelette' },
+                        price: '$8',
+                        image: 'https://images.unsplash.com/photo-1510693206972-df098062cb71?auto=format&fit=crop&w=800&q=80',
+                        desc: { 
+                            he: '3 ביצים + 2 תוספות לבחירה: בצל, עגבנייה, פטריות. מוגש עם לחם הבית.',
+                            en: '3 eggs + 2 toppings of choice: onion, tomato, mushrooms. Served with house bread.',
+                            es: '3 huevos + 2 ingredientes a elección: cebolla, tomate, champiñones. Servido con pan de la casa.',
+                            fr: '3 œufs + 2 ingrédients au choix : oignon, tomate, champignons. Servi avec le pain maison.'
+                        }
+                    },
+                    {
+                        name: { he: 'שקשוקה', en: 'Shakshuka', es: 'Shakshuka', fr: 'Shakshuka' },
+                        price: '$9',
+                        image: 'https://images.unsplash.com/photo-1590412200988-a436970781fa?auto=format&fit=crop&w=800&q=80',
+                        desc: { 
+                            he: '3 ביצים + 2 תוספות לבחירה: זיתים, רוטב שום, פסטו, גבינת שמנת. מוגש עם לחם הבית.',
+                            en: '3 eggs + 2 toppings of choice: olives, garlic sauce, pesto, cream cheese. Served with house bread.',
+                            es: '3 huevos + 2 acompañamientos a elección: aceitunas, salsa de ajo, pesto, queso crema. Servido con pan de la casa.',
+                            fr: '3 œufs + 2 accompagnements au choix : olives, sauce ail, pesto, fromage frais. Servi avec le pain maison.'
+                        }
+                    },
+                    {
+                        name: { he: 'ארוחת בוקר ישראלית', en: 'Israeli Breakfast', es: 'Desayuno Israelí', fr: 'Petit Déjeuner Israélien' },
+                        price: '$11',
+                        image: 'https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?auto=format&fit=crop&w=800&q=80',
+                        desc: { 
+                            he: '3 ביצים, סלט לבחירה, זיתים, רוטב שום, פסטו, גבינת שמנת ולחם הבית.',
+                            en: '3 eggs, choice of salad, olives, garlic sauce, pesto, cream cheese, and house bread.',
+                            es: '3 huevos, ensalada a elección, aceitunas, salsa de ajo, pesto, queso crema y pan de la casa.',
+                            fr: '3 œufs, salade au choix, olives, sauce ail, pesto, fromage frais et pain maison.'
+                        }
+                    },
+                    {
+                        name: { he: 'ארוחת בוקר אמריקאית', en: 'American Breakfast', es: 'Desayuno Americano', fr: 'Petit Déjeuner Américain' },
+                        price: '$12',
+                        image: 'https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=800&q=80',
+                        desc: { 
+                            he: '3 ביצים, תפוחי אדמה עם בצל, סלט לבחירה, חמאת בוטנים, ריבה, פסטו, גבינת שמנת ולחם הבית.',
+                            en: '3 eggs, home fries with onions, salad of choice, peanut butter, jam, pesto, cream cheese, and house bread.',
+                            es: '3 huevos, papas con cebolla, ensalada a elección, mantequilla de maní, mermelada, pesto, queso crema y pan de la casa.',
+                            fr: '3 œufs, pommes de terre sautées aux oignons, salade au choix, beurre de cacahuète, confiture, pesto, fromage frais et pain maison.'
+                        }
+                    },
+                    {
+                        name: { he: 'ארוחת בוקר מקסיקנית', en: 'Mexican Breakfast', es: 'Desayuno Mexicano', fr: 'Petit Déjeuner Mexicain' },
+                        price: '$12',
+                        image: 'https://images.unsplash.com/photo-1593584785033-9c7604d0863f?auto=format&fit=crop&w=800&q=80',
+                        desc: { 
+                            he: 'אומלט מ-3 ביצים עם פלפלים, בצל ומוצרלה. מוגש עם סלט לבחירה, זיתים, רוטב שום, פסטו, גבינת שמנת ולחם הבית.',
+                            en: '3-egg omelet with peppers, onion, and mozzarella. Served with choice of salad, olives, garlic sauce, pesto, cream cheese, and house bread.',
+                            es: 'Tortilla de 3 huevos con pimientos, cebolla y mozzarella. Servido con ensalada a elección, aceitunas, salsa de ajo, pesto, queso crema y pan de la casa.',
+                            fr: 'Omelette de 3 œufs aux poivrons, oignon et mozzarella. Servie avec salade au choix, olives, sauce ail, pesto, fromage frais et pain maison.'
+                        }
+                    },
+                    {
+                        name: { he: 'טוסט אבוקדו', en: 'Avocado Toast', es: 'Tostada de Aguacate', fr: 'Toast à l\'Avocat' },
+                        price: '$9.50',
+                        image: 'https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=800&q=80',
+                        desc: { 
+                            he: 'תוספת ביצת עין +$1.50 | סלט לבחירה: ישראלי או סלט עלים',
+                            en: 'Add fried egg +$1.50 | Choice of Israeli salad or Leaf salad',
+                            es: 'Añadir huevo frito +$1.50 | Opción de ensalada israelí o ensalada verde',
+                            fr: 'Supplément œuf au plat +$1.50 | Salade au choix : israélienne ou verte'
+                        }
+                    }
+                ],
+                extras: {
+                    he: 'תוספות סלט לבחירה: ישראלי או סלט עלים | אבוקדו לפי זמינות +$1',
+                    en: 'Salad choice: Israeli salad or Leaf salad | Avocado subject to availability +$1',
+                    es: 'Opción de ensalada: Ensalada israelí o Ensalada verde | Aguacate según disponibilidad +$1',
+                    fr: 'Choix de salade : israélienne ou verte | Avocat selon disponibilité +$1'
+                }
+            },
+            {
+                id: 'sandwiches',
+                icon: 'fa-bread-slice',
+                image: 'https://images.unsplash.com/photo-1509722747041-616f39b57569?auto=format&fit=crop&w=800&q=80',
+                items: [
+                    {
+                        name: { he: 'כריך ביצה', en: 'Egg Sandwich', es: 'Sándwich de Huevo', fr: 'Sandwich à l\'Œuf' },
+                        price: '$6',
+                        image: 'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=800&q=80',
+                        desc: { 
+                            he: 'ביצים, חסה, עגבנייה ובצל סגול.',
+                            en: 'Eggs, lettuce, tomato, and red onion.',
+                            es: 'Huevos, lechuga, tomate y cebolla morada.',
+                            fr: 'Œufs, laitue, tomate et oignon rouge.'
+                        }
+                    },
+                    {
+                        name: { he: 'כריך סלט ביצים', en: 'Egg Salad Sandwich', es: 'Sándwich de Ensalada de Huevo', fr: 'Sandwich Salade d\'Œufs' },
+                        price: '$6',
+                        image: 'https://images.unsplash.com/photo-1509722747041-616f39b57569?auto=format&fit=crop&w=800&q=80',
+                        desc: { 
+                            he: 'סלט ביצים, חסה, עגבנייה ובצל סגול.',
+                            en: 'Egg salad, lettuce, tomato, and red onion.',
+                            es: 'Ensalada de huevo, lechuga, tomate y cebolla morada.',
+                            fr: 'Salade d\'œufs, laitue, tomate et oignon rouge.'
+                        }
+                    },
+                    {
+                        name: { he: 'כריך טונה', en: 'Tuna Sandwich', es: 'Sándwich de Atún', fr: 'Sandwich au Thon' },
+                        price: '$7',
+                        image: 'https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=800&q=80',
+                        desc: { 
+                            he: 'סלט טונה, חסה, עגבנייה ובצל סגול.',
+                            en: 'Tuna salad, lettuce, tomato, and red onion.',
+                            es: 'Ensalada de atún, lechuga, tomate y cebolla morada.',
+                            fr: 'Salade de thon, laitue, tomate et oignon rouge.'
+                        }
+                    },
+                    {
+                        name: { he: 'כריך סלמון מעושן', en: 'Smoked Salmon Sandwich', es: 'Sándwich de Salmón Ahumado', fr: 'Sandwich au Saumon Fumé' },
+                        price: '$8',
+                        image: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=800&q=80',
+                        desc: { 
+                            he: 'סלמון מעושן, גבינת שמנת, חסה, עגבנייה ובצל סגול.',
+                            en: 'Smoked salmon, cream cheese, lettuce, tomato, and red onion.',
+                            es: 'Salmón ahumado, queso crema, lechuga, tomate y cebolla morada.',
+                            fr: 'Saumon fumé, fromage frais, laitue, tomate et oignon rouge.'
+                        }
+                    }
+                ]
+            },
+            {
+                id: 'toasts',
+                icon: 'fa-cheese',
+                image: 'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=800&q=80',
+                items: [
+                    {
+                        name: { he: 'טוסט קלאסי', en: 'Classic Toastie', es: 'Tostado Clásico', fr: 'Toast Classique' },
+                        price: '$7',
+                        image: 'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=800&q=80',
+                        desc: { 
+                            he: 'מוצרלה, רוטב עגבניות ו-2 תוספות לבחירה.',
+                            en: 'Mozzarella, tomato sauce, and 2 toppings of choice.',
+                            es: 'Mozzarella, salsa de tomate y 2 ingredientes a elección.',
+                            fr: 'Mozzarella, sauce tomate et 2 ingrédients au choix.'
+                        }
+                    },
+                    {
+                        name: { he: 'טוסט בלקני', en: 'Balkan Toastie', es: 'Tostado Balcánico', fr: 'Toast Balkanique' },
+                        price: '$9',
+                        image: 'https://images.unsplash.com/photo-1539252554453-80ab65ce3586?auto=format&fit=crop&w=800&q=80',
+                        desc: { 
+                            he: 'מוצרלה, פלפלים קלויים, פטה וזיתים.',
+                            en: 'Mozzarella, roasted peppers, feta cheese, and olives.',
+                            es: 'Mozzarella, pimientos asados, queso feta y aceitunas.',
+                            fr: 'Mozzarella, poivrons grillés, feta et olives.'
+                        }
+                    },
+                    {
+                        name: { he: 'טוסט קפרוזה', en: 'Caprese Toastie', es: 'Tostado Caprese', fr: 'Toast Caprese' },
+                        price: '$8.50',
+                        image: 'https://images.unsplash.com/photo-1509722747041-616f39b57569?auto=format&fit=crop&w=800&q=80',
+                        desc: { 
+                            he: 'פסטו, מוצרלה ועגבנייה.',
+                            en: 'Pesto, mozzarella, and tomato.',
+                            es: 'Pesto, mozzarella y tomate.',
+                            fr: 'Pesto, mozzarella et tomate.'
+                        }
+                    },
+                    {
+                        name: { he: 'טוסט זעתר', en: 'Za\'atar Toastie', es: 'Tostado de Za\'atar', fr: 'Toast Zaatar' },
+                        price: '$7',
+                        image: 'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=800&q=80',
+                        desc: { 
+                            he: 'מוצרלה, זעתר ושמן זית.',
+                            en: 'Mozzarella, za\'atar, and olive oil.',
+                            es: 'Mozzarella, za\'atar y aceite de oliva.',
+                            fr: 'Mozzarella, zaatar et huile d\'olive.'
+                        }
+                    }
+                ],
+                extras: {
+                    he: 'תוספות לבחירה (+$0.50): עגבנייה • בצל סגול • פטריות • תירס • זיתים • אננס',
+                    en: 'Extra toppings (+$0.50): Tomato • Red Onion • Mushrooms • Corn • Olives • Pineapple',
+                    es: 'Ingredientes adicionales (+$0.50): Tomate • Cebolla morada • Champiñones • Maíz • Aceitunas • Piña',
+                    fr: 'Ingrédients supplémentaires (+$0.50) : Tomate • Oignon rouge • Champignons • Maïs • Olives • Ananas'
+                }
+            },
+            {
+                id: 'pizzas',
+                icon: 'fa-pizza-slice',
+                image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=800&q=80',
+                items: [
+                    {
+                        name: { he: 'משולש פיצה גבינה', en: 'Cheese Pizza Slice', es: 'Porción de Pizza de Queso', fr: 'Part de Pizza au Fromage' },
+                        price: '$3',
+                        image: 'https://images.unsplash.com/photo-1534308983496-4fabb1a015ee?auto=format&fit=crop&w=800&q=80',
+                        desc: { 
+                            he: 'משולש פיצה חם עם רוטב עגבניות עשיר וגבינת מוצרלה נמסת.',
+                            en: 'Hot pizza slice with rich tomato sauce and melted mozzarella cheese.',
+                            es: 'Rebanada de pizza caliente con rica salsa de tomate y queso mozzarella derretido.',
+                            fr: 'Part de pizza chaude avec sauce tomate savoureuse et mozzarella fondante.'
+                        }
+                    },
+                    {
+                        name: { he: 'פיצה אישית גבינה', en: 'Personal Cheese Pizza', es: 'Pizza Personal de Queso', fr: 'Pizza Individuelle au Fromage' },
+                        price: '$10',
+                        image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=800&q=80',
+                        desc: { 
+                            he: 'פיצה אישית טרייה עם רוטב עגבניות וגבינת מוצרלה.',
+                            en: 'Fresh personal pizza with tomato sauce and mozzarella cheese.',
+                            es: 'Pizza personal fresca con salsa de tomate y queso mozzarella.',
+                            fr: 'Pizza individuelle fraîche avec sauce tomate et mozzarella.'
+                        }
+                    },
+                    {
+                        name: { he: 'פיצה אישית פסטו', en: 'Personal Pesto Pizza', es: 'Pizza Personal de Pesto', fr: 'Pizza Individuelle au Pesto' },
+                        price: '$11',
+                        image: 'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=800&q=80',
+                        desc: { 
+                            he: 'פיצה אישית עם בסיס רוטב פסטו עשיר וגבינת מוצרלה.',
+                            en: 'Personal pizza with rich pesto sauce base and mozzarella cheese.',
+                            es: 'Pizza personal con base de rica salsa pesto y queso mozzarella.',
+                            fr: 'Pizza individuelle sur base de pesto et mozzarella.'
+                        }
+                    },
+                    {
+                        name: { he: 'פיצה אישית אלפרדו פטריות', en: 'Personal Mushroom Alfredo Pizza', es: 'Pizza Personal Alfredo con Champiñones', fr: 'Pizza Individuelle Alfredo Champignons' },
+                        price: '$11',
+                        image: 'https://images.unsplash.com/photo-1571407970349-bc81e7e96d47?auto=format&fit=crop&w=800&q=80',
+                        desc: { 
+                            he: 'פיצה אישית עם רוטב שמנת אלפרדו, פטריות טריות וגבינת מוצרלה.',
+                            en: 'Personal pizza with cream Alfredo sauce, fresh mushrooms, and mozzarella cheese.',
+                            es: 'Pizza personal con salsa de crema Alfredo, champiñones frescos y queso mozzarella.',
+                            fr: 'Pizza individuelle avec sauce crème Alfredo, champignons frais et mozzarella.'
+                        }
+                    }
+                ],
+                extras: {
+                    he: 'תוספות לבחירה (+$1.00): עגבנייה • בצל סגול • פטריות • תירס • זיתים • אננס',
+                    en: 'Extra toppings (+$1.00): Tomato • Red Onion • Mushrooms • Corn • Olives • Pineapple',
+                    es: 'Ingredientes adicionales (+$1.00): Tomate • Cebolla morada • Champiñones • Maíz • Aceitunas • Piña',
+                    fr: 'Ingrédients supplémentaires (+$1.00) : Tomate • Oignon rouge • Champignons • Maïs • Olives • Ananas'
+                }
+            },
+            {
+                id: 'pastas',
+                icon: 'fa-bowl-food',
+                image: 'https://images.unsplash.com/photo-1555949258-eb67b1ef0ceb?auto=format&fit=crop&w=800&q=80',
+                note: {
+                    he: 'לבחירה: פנה, פטוטצ\'יני או ספגטי',
+                    en: 'Pasta choice: Penne, Fettuccine, or Spaghetti',
+                    es: 'Elección de pasta: Penne, Fettuccine o Espaguetis',
+                    fr: 'Choix de pâtes : Penne, Fettuccine ou Spaghettis'
+                },
+                items: [
+                    {
+                        name: { he: 'פסטה רוזה', en: 'Pasta Rosa', es: 'Pasta Rosa', fr: 'Pâtes Rosa' },
+                        price: '$10',
+                        image: 'https://images.unsplash.com/photo-1621996346565-e3d5d6281270?auto=format&fit=crop&w=800&q=80',
+                        desc: { 
+                            he: 'רוטב עגבניות עשיר בשילוב שמנת מתוקה. לבחירה: פנה, פטוטצ\'יני או ספגטי.',
+                            en: 'Rich tomato sauce combined with sweet cream. Pasta choice: Penne, Fettuccine, or Spaghetti.',
+                            es: 'Rica salsa de tomate combinada con crema dulce. Elección de pasta: Penne, Fettuccine o Espaguetis.',
+                            fr: 'Sauce tomate gourmande et touche de crème. Choix de pâtes : Penne, Fettuccine ou Spaghettis.'
+                        }
+                    },
+                    {
+                        name: { he: 'פסטה אלפרדו', en: 'Pasta Alfredo', es: 'Pasta Alfredo', fr: 'Pâtes Alfredo' },
+                        price: '$11',
+                        image: 'https://images.unsplash.com/photo-1645112411341-6c4fd023714a?auto=format&fit=crop&w=800&q=80',
+                        desc: { 
+                            he: 'רוטב שמנת קלאסי ועשיר. לבחירה: פנה, פטוטצ\'יני או ספגטי.',
+                            en: 'Classic rich cream sauce. Pasta choice: Penne, Fettuccine, or Spaghetti.',
+                            es: 'Salsa clásica y rica de crema. Elección de pasta: Penne, Fettuccine o Espaguetis.',
+                            fr: 'Sauce crème onctueuse classique. Choix de pâtes : Penne, Fettuccine ou Spaghettis.'
+                        }
+                    },
+                    {
+                        name: { he: 'פסטה פסטו', en: 'Pasta Pesto', es: 'Pasta Pesto', fr: 'Pâtes Pesto' },
+                        price: '$12',
+                        image: 'https://images.unsplash.com/photo-1473093295043-cdd812d0e601?auto=format&fit=crop&w=800&q=80',
+                        desc: { 
+                            he: 'פסטו בזיליקום טרי בשילוב נגיעת שמנת. לבחירה: פנה, פטוטצ\'יני או ספגטי.',
+                            en: 'Fresh basil pesto with a touch of cream. Pasta choice: Penne, Fettuccine, or Spaghetti.',
+                            es: 'Pesto de albahaca fresca con un toque de crema. Elección de pasta: Penne, Fettuccine o Espaguetis.',
+                            fr: 'Pesto de basilic frais et pointe de crème. Choix de pâtes : Penne, Fettuccine ou Spaghettis.'
+                        }
+                    },
+                    {
+                        name: { he: 'פסטה אלפרדו פטריות', en: 'Mushroom Alfredo Pasta', es: 'Pasta Alfredo con Champiñones', fr: 'Pâtes Alfredo aux Champignons' },
+                        price: '$12',
+                        image: 'https://images.unsplash.com/photo-1555949258-eb67b1ef0ceb?auto=format&fit=crop&w=800&q=80',
+                        desc: { 
+                            he: 'רוטב שמנת קלאסי עם פטריות טריות מוקפצות. לבחירה: פנה, פטוטצ\'יני או ספגטי.',
+                            en: 'Classic cream sauce with sauteed fresh mushrooms. Pasta choice: Penne, Fettuccine, or Spaghetti.',
+                            es: 'Salsa de crema clásica con champiñones frescos salteados. Elección de pasta: Penne, Fettuccine o Espaguetis.',
+                            fr: 'Sauce crème classique et champignons frais sautés. Choix de pâtes : Penne, Fettuccine ou Spaghettis.'
+                        }
+                    }
+                ],
+                extras: {
+                    he: 'תוספת פרמזן מגורד (+$1.00)',
+                    en: 'Grated Parmesan cheese (+$1.00)',
+                    es: 'Queso Parmesano rallado (+$1.00)',
+                    fr: 'Parmesan râpé (+$1.00)'
+                }
+            },
+            {
+                id: 'desserts',
+                icon: 'fa-ice-cream',
+                image: 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?auto=format&fit=crop&w=800&q=80',
+                items: [
+                    {
+                        name: { he: 'פנקייקים', en: 'Pancakes', es: 'Pancakes', fr: 'Pancakes' },
+                        price: '$8',
+                        image: 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?auto=format&fit=crop&w=800&q=80',
+                        desc: { 
+                            he: '3 פנקייקים מוגשים עם בננה, סירופ מייפל ושוקולד.',
+                            en: '3 pancakes served with banana, maple syrup, and chocolate.',
+                            es: '3 pancakes servidos con plátano, jarabe de arce y chocolate.',
+                            fr: '3 pancakes servis avec banane, sirop d\'érable et chocolat.'
+                        }
+                    },
+                    {
+                        name: { he: 'וופל בלגי', en: 'Belgian Waffle', es: 'Gofre Belga', fr: 'Gaufre Belge' },
+                        price: '$9',
+                        image: 'https://images.unsplash.com/photo-1562376552-0d160a2f238d?auto=format&fit=crop&w=800&q=80',
+                        desc: { 
+                            he: 'וופל בלגי חם ופריך מוגש עם רוטב שוקולד, מייפל וקצפת.',
+                            en: 'Crispy Belgian waffle served with chocolate sauce, maple syrup, and whipped cream.',
+                            es: 'Gofre belga crujiente servido con salsa de chocolate, jarabe de arce y crema batida.',
+                            fr: 'Gaufre belge croustillante servie avec sauce chocolat, sirop d\'érable et chantilly.'
+                        }
+                    },
+                    {
+                        name: { he: 'עוגת שוקולד חמה עם כדור גלידה', en: 'Warm Chocolate Cake with Ice Cream', es: 'Pastel Caliente de Chocolate con Helado', fr: 'Moelleux au Chocolat et Glace' },
+                        price: '$6',
+                        image: 'https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=800&q=80',
+                        desc: { 
+                            he: 'עוגת שוקולד חמה ועשירה מוגשת לצד כדור גלידת וניל.',
+                            en: 'Rich warm chocolate cake served with a scoop of vanilla ice cream.',
+                            es: 'Rico pastel caliente de chocolate servido con una bola de helado de vainilla.',
+                            fr: 'Fondant au chocolat chaud servi avec une boule de glace vanille.'
+                        }
+                    },
+                    {
+                        name: { he: 'עוגת שטרודל תפוחים', en: 'Apple Strudel Cake', es: 'Pastel Estrúdel de Manzana', fr: 'Gâteau Strudel aux Pommes' },
+                        price: '$4',
+                        image: 'https://images.unsplash.com/photo-1568571780765-9276ac8b75a2?auto=format&fit=crop&w=800&q=80',
+                        desc: { 
+                            he: 'שטרודל תפוחים קלאסי עם קינמון ואגוזים.',
+                            en: 'Classic apple strudel with cinnamon and walnuts.',
+                            es: 'Estrúdel de manzana clásico con canela y nueces.',
+                            fr: 'Strudel aux pommes traditionnel avec cannelle et noix.'
+                        }
+                    },
+                    {
+                        name: { he: 'עוגת גזר', en: 'Carrot Cake', es: 'Pastel de Zanahoria', fr: 'Gâteau aux Carottes' },
+                        price: '$4',
+                        image: 'https://images.unsplash.com/photo-1621303837174-89787a7d4729?auto=format&fit=crop&w=800&q=80',
+                        desc: { 
+                            he: 'עוגת גזר ביתית רכה ומתובלת בעדינות.',
+                            en: 'Soft, delicately spiced homemade carrot cake.',
+                            es: 'Pastel casero de zanahoria suave y delicadamente especiado.',
+                            fr: 'Gâteau aux carottes fait maison moelleux et délicatement épicé.'
+                        }
+                    },
+                    {
+                        name: { he: 'בוקסיטו פינוקים', en: 'Bocasito Indulgence', es: 'Bocasito Indulgente', fr: 'Bocasito Gourmandise' },
+                        price: '$9',
+                        image: 'https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=800&q=80',
+                        desc: { 
+                            he: 'תחתית בראוניז שוקולדית, גלידת וניל קרמית, פירורי ביסקוויטים קראנצ’יים, שוקולד נוזלי חם והר קצפת למעלה.',
+                            en: 'Chocolate brownie base, creamy vanilla ice cream, crunchy biscuit crumbs, warm melted chocolate, and a mountain of whipped cream on top.',
+                            es: 'Base de brownie de chocolate, helado cremoso de vainilla, migas crujientes de galleta, chocolate líquido caliente y montaña de crema batida encima.',
+                            fr: 'Base brownie au chocolat, glace vanille onctueuse, éclats de biscuits croustillants, chocolat fondu chaud et montagne de chantilly sur le dessus.'
+                        }
+                    },
+                    {
+                        name: { he: 'בוקסיטו פנאן', en: 'Bocasito Fun', es: 'Bocasito Diversión', fr: 'Bocasito Plaisir' },
+                        price: '$9',
+                        image: 'https://images.unsplash.com/photo-1562376552-0d160a2f238d?auto=format&fit=crop&w=800&q=80',
+                        desc: { 
+                            he: 'פירורי עוגיות, פרוסות בננה, אוכמניות עסיסיות, שוקולד נוזלי עשיר, קצפת עננים ותות שדה מעל.',
+                            en: 'Cookie crumbs, banana slices, juicy blueberries, rich melted chocolate, cloud whipped cream, and a strawberry on top.',
+                            es: 'Migas de galleta, rodajas de plátano, arándanos jugosos, rico chocolate líquido, crema batida nube y fresa encima.',
+                            fr: 'Éclats de biscuits, rondelles de banane, myrtilles juteuses, chocolat fondu riche, chantilly nuage et fraise sur le dessus.'
+                        }
+                    },
+                    {
+                        name: { he: 'בוקסיטו פירותי', en: 'Bocasito Fruity', es: 'Bocasito Frutal', fr: 'Bocasito Fruité' },
+                        price: '$9',
+                        image: 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?auto=format&fit=crop&w=800&q=80',
+                        desc: { 
+                            he: 'פירורי ביסקוויטים, מתיקות טבעית של בננה ותמר, יוגורט יווני קטיפתי, נגיעות שוקולד מריר וסיומת של קצפת ובננה.',
+                            en: 'Biscuit crumbs, natural sweetness of banana and date, velvety Greek yogurt, hints of dark chocolate, and a finish of whipped cream and banana.',
+                            es: 'Migas de galleta, dulzura natural de plátano y dátil, yogur griego aterciopelado, toques de chocolate amargo y acabado de crema batida y plátano.',
+                            fr: 'Éclats de biscuits, douceur naturelle de banane et datte, yaourt grec velouté, touches de chocolat noir et finition chantilly et banane.'
+                        }
+                    }
+                ]
+            },
+            {
+                id: 'smoothies',
+                icon: 'fa-blender',
+                image: 'https://images.unsplash.com/photo-1553530666-ba11a7da3888?auto=format&fit=crop&w=800&q=80',
+                items: [
+                    {
+                        name: { he: 'תות בננה', en: 'Strawberry Banana', es: 'Fresa Plátano', fr: 'Fraise Banane' },
+                        price: '$4',
+                        image: 'https://images.unsplash.com/photo-1553530666-ba11a7da3888?auto=format&fit=crop&w=800&q=80',
+                        desc: { 
+                            he: 'שייק מרענן של תות שדה ובננה',
+                            en: 'Refreshing smoothie with strawberry and banana.',
+                            es: 'Refrescante licuado de fresa y plátano.',
+                            fr: 'Smoothie rafraîchissant fraise et banane.'
+                        }
+                    },
+                    {
+                        name: { he: 'אננס ותות', en: 'Pineapple Strawberry', es: 'Piña Fresa', fr: 'Ananas Fraise' },
+                        price: '$4',
+                        image: 'https://images.unsplash.com/photo-1623065422902-30a2d299bbe4?auto=format&fit=crop&w=800&q=80',
+                        desc: { 
+                            he: 'שילוב טרופי מתוק של אננס ותות שדה.',
+                            en: 'Sweet tropical mix of pineapple and strawberry.',
+                            es: 'Mezcla tropical dulce de piña y fresa.',
+                            fr: 'Mélange tropical doux ananas et fraise.'
+                        }
+                    },
+                    {
+                        name: { he: 'בננה תמר טחינה', en: 'Banana Date Tahini', es: 'Plátano Dátil Tahini', fr: 'Banane Datte Tahini' },
+                        price: '$5',
+                        image: 'https://images.unsplash.com/photo-1577805947697-89e18249d767?auto=format&fit=crop&w=800&q=80',
+                        desc: { 
+                            he: 'שייק עשיר ומזין של בננה, תמרים וטחינה גולמית.',
+                            en: 'Rich and nutritious smoothie with banana, dates, and raw tahini.',
+                            es: 'Rico y nutritivo licuado de plátano, dátiles y tahini puro.',
+                            fr: 'Smoothie riche et nourrissant banane, dattes et tahini brut.'
+                        }
+                    },
+                    {
+                        name: { he: 'מנגו אננס פסיפלורה', en: 'Mango Pineapple Passion Fruit', es: 'Mango Piña Maracuyá', fr: 'Mangue Ananas Fruit de la Passion' },
+                        price: '$5',
+                        image: 'https://images.unsplash.com/photo-1546173159-315724a31696?auto=format&fit=crop&w=800&q=80',
+                        desc: { 
+                            he: 'חגיגה טרופית של מנגו, אננס ופסיפלורה.',
+                            en: 'Tropical explosion of mango, pineapple, and passion fruit.',
+                            es: 'Explosión tropical de mango, piña y maracuyá.',
+                            fr: 'Délice tropical mangue, ananas et fruit de la passion.'
+                        }
+                    },
+                    {
+                        name: { he: 'בננה מנגו קינמון ודבש', en: 'Banana Mango Cinnamon & Honey', es: 'Plátano Mango Canela y Miel', fr: 'Banane Mangue Cannelle & Miel' },
+                        price: '$4.50',
+                        image: 'https://images.unsplash.com/photo-1502741224143-90386d7f8c82?auto=format&fit=crop&w=800&q=80',
+                        desc: { 
+                            he: 'שייק בננה ומנגו עם נגיעת קינמון ודבש טבעי.',
+                            en: 'Banana and mango smoothie with a touch of cinnamon and natural honey.',
+                            es: 'Licuado de plátano y mango con un toque de canela y miel natural.',
+                            fr: 'Smoothie banane et mangue avec une pointe de cannelle et miel naturel.'
+                        }
+                    }
+                ],
+                extras: {
+                    he: 'על בסיס חלב / מים לבחירה',
+                    en: 'Milk or water base of choice',
+                    es: 'Base de leche o agua a elección',
+                    fr: 'Base au choix : lait ou eau'
+                }
+            },
+            {
+                id: 'coffee',
+                icon: 'fa-mug-hot',
+                image: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=800&q=80',
+                note: {
+                    he: 'לבחירה: חלב רגיל, חלב שיבולת שועל או חלב שקדים',
+                    en: 'Milk options: Regular milk, Oat milk, or Almond milk',
+                    es: 'Opciones de leche: Leche regular, Leche de avena o Leche de almendras',
+                    fr: 'Choix de lait : Lait entier, Lait d\'avoine ou Lait d\'amande'
+                },
+                items: [
+                    {
+                        name: { he: 'אספרסו', en: 'Espresso', es: 'Café Expreso', fr: 'Espresso' },
+                        price: '$2.50',
+                        image: 'https://images.unsplash.com/photo-1510591509098-f4fdc6d0ff04?auto=format&fit=crop&w=800&q=80',
+                        desc: { 
+                            he: 'מנת אספרסו קצר או ארוך מפולי קפה איכותיים.',
+                            en: 'Single or double shot espresso from premium roasted beans.',
+                            es: 'Café expreso simple o doble elaborado con granos premium.',
+                            fr: 'Espresso simple ou allongé à partir de grains de qualité.'
+                        }
+                    },
+                    {
+                        name: { he: 'אמריקנו', en: 'Americano', es: 'Café Americano', fr: 'Café Américain' },
+                        price: '$3',
+                        image: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=800&q=80',
+                        desc: { 
+                            he: 'אספרסו כפול מדולל במים חמים.',
+                            en: 'Double espresso diluted with hot water.',
+                            es: 'Doble expreso diluido con agua caliente.',
+                            fr: 'Double espresso allongé à l\'eau chaude.'
+                        }
+                    },
+                    {
+                        name: { he: 'קפוצ\'ינו', en: 'Cappuccino', es: 'Capuchino', fr: 'Cappuccino' },
+                        price: '$4',
+                        image: 'https://images.unsplash.com/photo-1534778101976-62847782c213?auto=format&fit=crop&w=800&q=80',
+                        desc: { 
+                            he: 'אספרסו משובח עם חלב חם ומוקצף.',
+                            en: 'Rich espresso topped with steamed milk and creamy foam.',
+                            es: 'Café expreso con leche al vapor y espuma cremosa.',
+                            fr: 'Espresso équilibré avec lait chaud et mousse onctueuse.'
+                        }
+                    },
+                    {
+                        name: { he: 'לאטה', en: 'Latte', es: 'Café Latte', fr: 'Grand Café au Lait' },
+                        price: '$4.50',
+                        image: 'https://images.unsplash.com/photo-1570968915860-54d5c301fa9f?auto=format&fit=crop&w=800&q=80',
+                        desc: { 
+                            he: 'אספרסו עדין עם חלב חם מוקצף קלות.',
+                            en: 'Smooth espresso with plenty of steamed milk and light foam.',
+                            es: 'Café expreso suave con abundante leche al vapor.',
+                            fr: 'Espresso doux avec beaucoup de lait chaud mousseux.'
+                        }
+                    },
+                    {
+                        name: { he: 'קפה קר', en: 'Iced Coffee', es: 'Café Frío', fr: 'Café Glacé' },
+                        price: '$5',
+                        image: 'https://images.unsplash.com/photo-1517701604599-bb29b565090c?auto=format&fit=crop&w=800&q=80',
+                        desc: { 
+                            he: 'אספרסו מרענן עם חלב קר וקרם קפה על בסיס קרח.',
+                            en: 'Refreshing espresso with cold milk and ice.',
+                            es: 'Refrescante café expreso con leche fría e hielo.',
+                            fr: 'Espresso rafraîchissant avec lait froid et glaçons.'
+                        }
+                    }
+                ]
+            },
+            {
+                id: 'drinks',
+                icon: 'fa-glass-water',
+                image: 'https://images.unsplash.com/photo-1543253687-c931c8e01820?auto=format&fit=crop&w=800&q=80',
+                items: [
+                    {
+                        name: { he: 'מים מינרליים', en: 'Mineral Water', es: 'Agua Mineral', fr: 'Eau Minérale' },
+                        price: '$2',
+                        image: 'https://images.unsplash.com/photo-1548839140-29a749e1bc4e?auto=format&fit=crop&w=800&q=80',
+                        desc: { 
+                            he: 'בקבוק מים מינרליים צונן.',
+                            en: 'Chilled bottle of mineral water.',
+                            es: 'Botella de agua mineral fría.',
+                            fr: 'Bouteille d\'eau minérale fraîche.'
+                        }
+                    },
+                    {
+                        name: { he: 'קוקה קולה', en: 'Coca Cola', es: 'Coca Cola', fr: 'Coca Cola' },
+                        price: '$2.50',
+                        image: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=800&q=80',
+                        desc: { 
+                            he: 'פחית / בקבוק קוקה קולה קרה.',
+                            en: 'Chilled Coca Cola.',
+                            es: 'Coca Cola bien fría.',
+                            fr: 'Coca Cola bien frais.'
+                        }
+                    },
+                    {
+                        name: { he: 'קולה זירו', en: 'Cola Zero', es: 'Coca Cola Zero', fr: 'Coca Cola Zero' },
+                        price: '$2.50',
+                        image: 'https://images.unsplash.com/photo-1554866585-cd94860890b7?auto=format&fit=crop&w=800&q=80',
+                        desc: { 
+                            he: 'פחית / בקבוק קוקה קולה זירו קרה.',
+                            en: 'Chilled Coca Cola Zero.',
+                            es: 'Coca Cola Zero bien fría.',
+                            fr: 'Coca Cola Zero bien frais.'
+                        }
+                    },
+                    {
+                        name: { he: 'ספרייט', en: 'Sprite', es: 'Sprite', fr: 'Sprite' },
+                        price: '$2.50',
+                        image: 'https://images.unsplash.com/photo-1625772299848-391b6a87d7b3?auto=format&fit=crop&w=800&q=80',
+                        desc: { 
+                            he: 'משקה מוגז בטעם לימון-ליין.',
+                            en: 'Refreshing lemon-lime sparkling drink.',
+                            es: 'Bebida refrescante de limón-lima.',
+                            fr: 'Boisson gazeuse rafraîchissante citron-citron vert.'
+                        }
+                    },
+                    {
+                        name: { he: 'סודה', en: 'Soda Water', es: 'Agua Con Gas', fr: 'Eau Gazeuse' },
+                        price: '$2',
+                        image: 'https://images.unsplash.com/photo-1527661591475-527312dd65f5?auto=format&fit=crop&w=800&q=80',
+                        desc: { 
+                            he: 'פחית / בקבוק סודה מוגזת וצוננת.',
+                            en: 'Chilled can / bottle sparkling soda water.',
+                            es: 'Lata / botella de agua con gas bien fría.',
+                            fr: 'Canette / bouteille d\'eau gazeuse très fraîche.'
+                        }
+                    },
+                    {
+                        name: { he: 'מיץ תפוזים (Tropicana)', en: 'Orange Juice (Tropicana)', es: 'Jugo de Naranja (Tropicana)', fr: 'Jus d\'Orange (Tropicana)' },
+                        price: '$3.50',
+                        image: 'https://images.unsplash.com/photo-1613478223719-2ab802602423?auto=format&fit=crop&w=800&q=80',
+                        desc: { 
+                            he: 'מיץ תפוזים טעים ואיכותי של Tropicana.',
+                            en: 'Delicious Tropicana orange juice.',
+                            es: 'Delicioso jugo de naranja Tropicana.',
+                            fr: 'Délicieux jus d\'orange Tropicana.'
+                        }
+                    },
+                    {
+                        name: { he: 'בירה', en: 'Beer', es: 'Cerveza', fr: 'Bière' },
+                        price: '$3.50',
+                        image: 'https://images.unsplash.com/photo-1608270586620-248524c67de9?auto=format&fit=crop&w=800&q=80',
+                        desc: { 
+                            he: 'פחית / בקבוק בירה צונן מהמגוון.',
+                            en: 'Chilled can / bottle of beer.',
+                            es: 'Lata / botella de cerveza fría.',
+                            fr: 'Canette / bouteille de bière fraîche.'
+                        }
+                    }
+                ]
+            }
+        ];
+
+        let currentLang = 'he';
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            const langData = i18n[lang];
+
+            // Update HTML Document Direction & Font
+            document.documentElement.dir = langData.dir;
+            document.documentElement.lang = lang;
+
+            if (lang === 'he') {
+                document.body.classList.remove('font-en');
+                document.body.classList.add('font-he');
+            } else {
+                document.body.classList.remove('font-he');
+                document.body.classList.add('font-en');
+            }
+
+            // Update Header Notice & Static Texts
+            document.getElementById('notice-text').textContent = langData.notice;
+            document.getElementById('subtitle-text').textContent = langData.subtitle;
+            document.getElementById('title-text').textContent = langData.title;
+            document.getElementById('desc-text').textContent = langData.desc;
+            document.getElementById('footer-notice').textContent = langData.footerNotice;
+
+            // Modal texts
+            document.getElementById('modal-waiter-text').textContent = langData.waiterOrderText;
+            document.getElementById('modal-close-btn').textContent = langData.closeBtn;
+
+            // Toggle language button styles
+            ['he', 'en', 'es', 'fr'].forEach(l => {
+                const btn = document.getElementById(`lang-${l}`);
+                if (l === lang) {
+                    btn.className = "px-2.5 py-1 text-xs font-semibold rounded-full transition-all duration-200 bg-sababa-800 text-white shadow-sm";
+                } else {
+                    btn.className = "px-2.5 py-1 text-xs font-semibold rounded-full transition-all duration-200 text-stone-600 hover:text-stone-900";
+                }
+            });
+
+            // Re-render menu content
+            renderTabs();
+            renderMenuSections();
+        }
+
+        function renderTabs() {
+            const tabsContainer = document.getElementById('categories-tabs');
+            tabsContainer.innerHTML = '';
+
+            menuData.forEach((cat, index) => {
+                const btn = document.createElement('button');
+                btn.onclick = () => scrollToCategory(cat.id);
+                btn.className = `flex items-center gap-2 px-4 py-2 text-xs md:text-sm font-medium rounded-full whitespace-nowrap transition-all duration-200 ${index === 0 ? 'bg-sababa-800 text-white shadow-sm' : 'bg-stone-100 text-stone-700 hover:bg-stone-200'}`;
+                btn.id = `tab-btn-${cat.id}`;
+                
+                const title = i18n[currentLang].categories[cat.id];
+                btn.innerHTML = `<i class="fa-solid ${cat.icon}"></i> <span>${title}</span>`;
+                tabsContainer.appendChild(btn);
+            });
+        }
+
+        function scrollToCategory(catId) {
+            const element = document.getElementById(catId);
+            if (element) {
+                const yOffset = -120; // sticky header + category tabs offset
+                const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+                window.scrollTo({ top: y, behavior: 'smooth' });
+            }
+
+            // Highlight tab
+            menuData.forEach(cat => {
+                const btn = document.getElementById(`tab-btn-${cat.id}`);
+                if (cat.id === catId) {
+                    btn.className = 'flex items-center gap-2 px-4 py-2 text-xs md:text-sm font-medium rounded-full whitespace-nowrap transition-all duration-200 bg-sababa-800 text-white shadow-sm';
+                } else {
+                    btn.className = 'flex items-center gap-2 px-4 py-2 text-xs md:text-sm font-medium rounded-full whitespace-nowrap transition-all duration-200 bg-stone-100 text-stone-700 hover:bg-stone-200';
+                }
+            });
+        }
+
+        function renderMenuSections() {
+            const container = document.getElementById('menu-sections');
+            container.innerHTML = '';
+
+            menuData.forEach(cat => {
+                const catTitle = i18n[currentLang].categories[cat.id];
+                
+                const section = document.createElement('section');
+                section.id = cat.id;
+                section.className = "scroll-mt-32";
+
+                // Section HTML markup
+                section.innerHTML = `
+                    <div class="bg-white rounded-2xl border border-stone-200/80 shadow-sm overflow-hidden">
+                        <!-- Category Header Banner -->
+                        <div class="relative h-44 md:h-56 overflow-hidden">
+                            <img src="${cat.image}" alt="${catTitle}" class="w-full h-full object-cover transition-transform duration-700 hover:scale-105" loading="lazy" onerror="this.src='https://placehold.co/800x400/f7f2e8/4a3b19?text=${encodeURIComponent(catTitle)}'">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent flex items-end p-6">
+                                <div>
+                                    <h2 class="text-2xl md:text-3xl font-bold text-white flex items-center gap-3">
+                                        <i class="fa-solid ${cat.icon} text-amber-400 text-xl"></i>
+                                        ${catTitle}
+                                    </h2>
+                                    ${cat.note ? `<p class="text-xs md:text-sm text-amber-200 mt-1">${cat.note[currentLang]}</p>` : ''}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Items Grid -->
+                        <div class="p-4 md:p-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                                ${cat.items.map((item, itemIdx) => `
+                                    <div onclick="openDishModal('${cat.id}', ${itemIdx})" class="p-4 rounded-xl bg-stone-50/70 border border-stone-200/80 hover:border-amber-400 hover:shadow-md transition-all duration-200 cursor-pointer group flex flex-col justify-between">
+                                        <div>
+                                            <div class="flex items-baseline justify-between gap-2 mb-1">
+                                                <h3 class="font-bold text-stone-900 text-base md:text-lg group-hover:text-sababa-600 transition-colors">${item.name[currentLang]}</h3>
+                                                <span class="font-bold text-sababa-600 text-base md:text-lg whitespace-nowrap px-2.5 py-0.5 rounded-md bg-amber-50 border border-amber-200/60">${item.price}</span>
+                                            </div>
+                                            ${item.desc[currentLang] ? `<p class="text-xs md:text-sm text-stone-600 leading-relaxed line-clamp-2">${item.desc[currentLang]}</p>` : ''}
+                                        </div>
+                                        <div class="mt-3 flex items-center text-xs font-semibold text-sababa-600 group-hover:underline">
+                                            <span>${i18n[currentLang].clickToView}</span>
+                                            <i class="fa-solid ${currentLang === 'he' ? 'fa-arrow-left' : 'fa-arrow-right'} mr-1 ml-1 text-[10px]"></i>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+
+                            ${cat.extras ? `
+                                <div class="mt-6 pt-4 border-t border-stone-100 text-center">
+                                    <span class="inline-block text-xs md:text-sm font-medium text-amber-900 bg-amber-50 border border-amber-200/80 rounded-lg px-4 py-2">
+                                        ✨ ${cat.extras[currentLang]}
+                                    </span>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+
+                container.appendChild(section);
+            });
+        }
+
+        // Modal Interactive Functions
+        function openDishModal(catId, itemIdx) {
+            try {
+                const cat = menuData.find(c => c.id === catId);
+                if (!cat) return;
+                const item = cat.items[itemIdx];
+                if (!item) return;
+
+                const catTitle = i18n[currentLang].categories[cat.id];
+
+                document.getElementById('modal-dish-img').src = item.image;
+                document.getElementById('modal-dish-img').alt = item.name[currentLang];
+                document.getElementById('modal-dish-price').textContent = item.price;
+                document.getElementById('modal-dish-cat').textContent = catTitle;
+                document.getElementById('modal-dish-title').textContent = item.name[currentLang];
+                document.getElementById('modal-dish-desc').textContent = item.desc[currentLang] || catTitle;
+
+                const modal = document.getElementById('dish-modal');
+                const modalContent = document.getElementById('modal-content');
+
+                modal.classList.remove('hidden');
+                setTimeout(() => {
+                    modal.classList.remove('opacity-0');
+                    modalContent.classList.remove('scale-95');
+                    modalContent.classList.add('scale-100');
+                }, 10);
+                document.body.style.overflow = 'hidden';
+            } catch (err) {
+                console.error('Error opening dish modal:', err);
+            }
+        }
+
+        function closeModal() {
+            try {
+                const modal = document.getElementById('dish-modal');
+                const modalContent = document.getElementById('modal-content');
+
+                modal.classList.add('opacity-0');
+                modalContent.classList.remove('scale-100');
+                modalContent.classList.add('scale-95');
+
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                    document.body.style.overflow = '';
+                }, 300);
+            } catch (err) {
+                console.error('Error closing dish modal:', err);
+            }
+        }
+
+        function closeModalOnBackdrop(event) {
+            if (event.target.id === 'dish-modal') {
+                closeModal();
+            }
+        }
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Initialize menu on page load
+        window.onload = function() {
+            setLanguage('he');
+        };
+    </script>
+</body>
+</html>
